@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+
+<mat-dialog-content>
+<form>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6">
+                <mat-form-field appearance="fill" class="mat-form-field">
+                    <mat-label>Name</mat-label>
+                    <input matInput [(ngModel)]="data.name" name="name" required>
+                </mat-form-field>
+            </div>
+            <div class="col-6">
+                <mat-form-field appearance="fill" class="mat-form-field">
+                    <mat-label>SCAC</mat-label>
+                    <input matInput [(ngModel)]="data.scac" name="scac" required>
+                </mat-form-field>
+            </div>
+            <div class="col-12">
+                <mat-checkbox [(ngModel)]="data.isActive" name="isActive">Active</mat-checkbox>
+            </div>
+            <div class="col-12">
+                <mat-checkbox [(ngModel)]="data.isMockMode" name="isMockMode">Mock Mode</mat-checkbox>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-raised-button (click)="cancel()">Cancel</button>
+  <button mat-raised-button color="primary" (click)="save()">Save</button>
+</mat-dialog-actions>

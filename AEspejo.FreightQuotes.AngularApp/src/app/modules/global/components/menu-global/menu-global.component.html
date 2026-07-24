@@ -1,0 +1,40 @@
+
+<mat-toolbar color="primary" class="custom-toolbar">
+
+  <div class="toolbar-left">
+    <button mat-icon-button aria-label="Home" routerLink="/">
+      <mat-icon>home</mat-icon>
+    </button>
+    <span class="app-title">Freight Quotes Demo</span>
+  </div>
+
+  <!-- Menú central SIN routerLink -->
+  <!--<div class="toolbar-center">
+    <button mat-button *ngFor="let item of menuItems"
+            (click)="navigateTo(item.route)">
+      { { item.label } }
+    </button>
+  </div>-->
+  <!-- User info -->
+  <div class="toolbar-right">
+    <div class="user-info">
+      <mat-icon class="user-icon">person</mat-icon>
+      <span>Quest User</span>
+    </div>
+    <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item routerLink="/settings">
+        <mat-icon>settings</mat-icon>
+        <span>Configuration</span>
+      </button>
+      <button mat-menu-item>
+        <mat-icon>logout</mat-icon>
+        <span>Log out</span>
+      </button>
+    </mat-menu>
+  </div>
+</mat-toolbar>
+<router-outlet></router-outlet>

@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AEspejo.FreightQuotes.Application": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

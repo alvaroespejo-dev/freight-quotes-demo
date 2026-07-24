@@ -1,0 +1,99 @@
+<h2 mat-dialog-title>Settings — {{ data.carrierName }}</h2>
+
+<mat-dialog-content>
+
+  @if (settingService.isLoading()) {
+    <div class="loading">Loading settings...</div>
+  }
+
+  @if (settingService.error(); as error) {
+    <div class="error">{{ error }}</div>
+  }
+
+  @if (!settingService.isLoading()) {
+    <table mat-table [dataSource]="rows" class="mat-elevation-z2 settings-table">
+
+      <ng-container matColumnDef="settingType">
+        <th mat-header-cell *matHeaderCellDef> Type </th>
+        <td mat-cell *matCellDef="let row"> {{ row.settingTypeName }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="key">
+        <th mat-header-cell *matHeaderCellDef> Key </th>
+        <td mat-cell *matCellDef="let row"> {{ row.carrierSettingTypeName }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="value">
+        <th mat-header-cell *matHeaderCellDef> Value </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-form-field appearance="fill" class="value-field">
+            <input matInput [(ngModel)]="row.value" [name]="'value-' + row.id" placeholder="(empty)">
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="isActive">
+        <th mat-header-cell *matHeaderCellDef> Active </th>
+        <td mat-cell *matCellDef="let row">
+          <mat-checkbox [(ngModel)]="row.isActive" [name]="'active-' + row.id"></mat-checkbox>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-icon-button color="primary" aria-label="Save" (click)="saveRow(row)">
+            <mat-icon>save</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" aria-label="Delete" (click)="delete(row)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+          No settings for this carrier yet.
+        </td>
+      </tr>
+    </table>
+
+    <div class="add-row">
+      <mat-form-field appearance="fill">
+        <mat-label>Type</mat-label>
+        <mat-select [(ngModel)]="newSetting.settingTypeId" name="newSettingType">
+          @for (t of settingService.settingTypes(); track t.id) {
+            <mat-option [value]="t.id">{{ t.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Key</mat-label>
+        <mat-select [(ngModel)]="newSetting.carrierSettingTypeId" name="newSettingKey">
+          @for (k of settingService.settingKeys(); track k.id) {
+            <mat-option [value]="k.id">{{ k.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Value</mat-label>
+        <input matInput [(ngModel)]="newSetting.value" name="newSettingValue">
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="add()">
+        <mat-icon>add_circle_outline</mat-icon>
+        Add
+      </button>
+    </div>
+  }
+
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button mat-raised-button (click)="close()">Close</button>
+</mat-dialog-actions>

@@ -1,0 +1,32 @@
+.settings-table {
+  width: 100%;
+}
+
+.value-field {
+  width: 100%;
+}
+
+.value-field .mat-mdc-form-field-subscript-wrapper {
+  display: none;
+}
+
+.add-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+.add-row mat-form-field {
+  min-width: 160px;
+}
+
+.loading,
+.error {
+  padding: 12px;
+}
+
+.error {
+  color: var(--mat-sys-error, #b00020);
+}

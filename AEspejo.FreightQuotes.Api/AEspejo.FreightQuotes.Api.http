@@ -1,0 +1,6 @@
+@AEspejo.FreightQuotes.Api_HostAddress = http://localhost:5047
+
+GET {{AEspejo.FreightQuotes.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

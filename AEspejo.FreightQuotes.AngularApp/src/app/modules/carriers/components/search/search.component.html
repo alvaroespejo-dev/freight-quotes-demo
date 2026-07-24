@@ -1,0 +1,132 @@
+<mat-toolbar>
+  <div class="container-fluid" >
+    <div class="row">
+      <div class="col-6">
+        <button mat-raised-button color="primary" class="my-2" (click)="create()">
+          <mat-icon>add_circle_outline</mat-icon>
+          Add Carrier
+        </button>
+      </div>
+      <div class="col-6">
+        <mat-form-field appearance="fill">
+          <mat-label>Search</mat-label>
+          <input matInput [(ngModel)]="searchText" name="searchText" (keyup.enter)="loadCarriers()" placeholder="Search carriers">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</mat-toolbar>
+
+<div class="container-fluid my-3">
+      <div class="row">
+        <div class="col">
+          <div class="mat-elevation-z8">
+      <!-- Loading state -->
+      @if (carrierService.isLoading()) {
+        <div class="loading">Loading carriers...</div>
+      }
+
+      <!-- Error state -->
+      @if (carrierService.error(); as error) {
+        <div class="error">
+          {{ error }}
+          <button (click)="loadCarriers()">Retry</button>
+        </div>
+      }
+<!-- Success state -->
+      @if (!carrierService.isLoading() && !carrierService.error()) {
+          <table mat-table [dataSource]="carrierService.carriers()" class="mat-elevation-z8">
+
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef> Id. </th>
+              <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+            </ng-container> 
+
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef> Name </th>
+              <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>  
+
+            <ng-container matColumnDef="scac">
+              <th mat-header-cell *matHeaderCellDef> Scac </th>
+              <td mat-cell *matCellDef="let element"> {{element.scac}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="isActive">
+              <th mat-header-cell *matHeaderCellDef> Is Active </th>
+              <td mat-cell *matCellDef="let element"> {{element.isActive ? 'Yes' : 'No'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="isMockMode">
+              <th mat-header-cell *matHeaderCellDef> Mock Mode </th>
+              <td mat-cell *matCellDef="let element"> {{element.isMockMode ? 'Yes' : 'No'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef> Actions </th>
+              <td mat-cell *matCellDef="let element">
+                <button mattooltip="Edit Carrier" mat-icon-button color="primary" aria-label="Edit" (click)="edit(element)">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mattooltip="Settings" mat-icon-button color="accent" aria-label="Settings" (click)="settings(element)">
+                  <mat-icon>settings</mat-icon>
+                </button>
+                <button mattooltip="Delete Carrier" mat-icon-button color="warn" aria-label="Delete" (click)="delete(element.id)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" [attr.colspan]="displayedColumns.length">
+                <mat-icon class="mx-3">warning</mat-icon>
+                    No data matching the filter "{{searchText}}"
+              </td>
+            </tr>
+
+          </table> 
+          <mat-paginator #paginator
+               (page)="changePageEvent($event)"
+               [length]="totalQuantity"
+               [pageSize]="pageSize"
+               [showFirstLastButtons]="true"
+               [pageSizeOptions]="paginatorOptions"
+               [pageIndex]="currentPage"
+               aria-label="Select page">
+          </mat-paginator>
+      }
+
+          </div>
+        </div>
+</div>
+<div>
+  <!-- <p>isLoading: {{ carrierService.isLoading() }}</p>
+  <p>error: {{ carrierService.error() }}</p>
+  <p>carriers type: {{ typeof carrierService.carriers() }}</p> -->
+  <!-- <p>carriers value: {{ carrierService.carriers() | json }}</p> -->
+  <!-- <p>is array: {{ isArray() }}</p> -->
+</div>
+    
+      <!-- Success state -->
+      <!-- @if (!carrierService.isLoading() && !carrierService.error()) {
+        <div class="carriers-list">
+          @if (carrierService.carriers().length === 0) {
+            <p>No carriers found</p>
+          } @else {
+            <table mat-table [dataSource]="carrierService.carriers()" class="mat-elevation-z8">
+                @for (column of displayedColumns; track column) {
+                <ng-container [matColumnDef]="column">
+                  <th mat-header-cell *matHeaderCellDef> {{ column }} </th>
+                  <td mat-cell *matCellDef="let carrier"> {{ carrier[toCamelCase(column)] }} </td>
+                </ng-container>
+                }
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table> 
+          }
+        </div>
+      } -->

@@ -1,0 +1,360 @@
+<div class="rate-quotes container-fluid my-3">
+
+  <div class="page-head">
+    <h2 class="page-title">Rate Quotes</h2>
+    <div class="examples-col">
+      <button type="button" mat-stroked-button color="primary" class="example-btn"
+              *ngFor="let ex of examples; let i = index" (click)="applyExample(i)">
+        <mat-icon>bolt</mat-icon> {{ ex.label }}
+      </button>
+      <button type="button" mat-stroked-button class="example-btn clear-btn" (click)="clearForm()">
+        <mat-icon>backspace</mat-icon> Clear
+      </button>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+
+    <!-- Ship Date + Terms + Role on the left, Billing on the right -->
+    <div class="address-row">
+      <div class="address-col shipping-terms-col">
+        <mat-form-field appearance="fill">
+          <mat-label>Ship Date</mat-label>
+          <input matInput [matDatepicker]="shipDatePicker" formControlName="shipDate">
+          <mat-datepicker-toggle matSuffix [for]="shipDatePicker"></mat-datepicker-toggle>
+          <mat-datepicker #shipDatePicker></mat-datepicker>
+          <mat-error>Ship Date is required</mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Terms</mat-label>
+          <mat-select formControlName="termsId">
+            <mat-option *ngFor="let t of terms()" [value]="t.id">{{ t.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill">
+          <mat-label>Role</mat-label>
+          <mat-select formControlName="roleId">
+            <mat-option *ngFor="let r of roles()" [value]="r.id">{{ r.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="address-col billing-col">
+        <ng-container *ngTemplateOutlet="addressTpl; context: { group: form.get('billingAddress'), services: false, title: 'Billing', key: 'billingAddress', icon: 'receipt_long' }">
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Origin + Destination: same row (stack on mobile) -->
+    <div class="address-row">
+      <div class="address-col">
+        <ng-container *ngTemplateOutlet="addressTpl; context: { group: form.get('originAddress'), services: true, title: 'Origin', key: 'originAddress', insideLabel: 'Inside Pick-up', icon: 'place' }">
+        </ng-container>
+      </div>
+      <div class="address-col">
+        <ng-container *ngTemplateOutlet="addressTpl; context: { group: form.get('destinationAddress'), services: true, title: 'Destination', key: 'destinationAddress', insideLabel: 'Inside Delivery', icon: 'place' }">
+        </ng-container>
+      </div>
+    </div>
+
+    <!-- Shipment accessorials -->
+    <div class="address-row">
+      <div class="address-col">
+        <mat-expansion-panel #accPanel class="section address-panel">
+          <mat-expansion-panel-header class="address-header" [collapsedHeight]="'auto'" [expandedHeight]="'48px'">
+            <mat-panel-title><mat-icon class="section-icon">check_circle</mat-icon>Accessorials</mat-panel-title>
+            <mat-panel-description class="address-summary" *ngIf="!accPanel.expanded">
+              <span class="summary-item" *ngFor="let it of accessorialsSummaryItems()">{{ it }}</span>
+              <span class="summary-empty" *ngIf="!accessorialsSummaryItems().length">None selected</span>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div class="checkbox-row">
+            <mat-checkbox formControlName="doNotFreeze">Do Not Freeze</mat-checkbox>
+            <mat-checkbox formControlName="insuranceRequired">Insurance Required</mat-checkbox>
+            <mat-checkbox formControlName="cod">COD</mat-checkbox>
+            <mat-checkbox formControlName="inBond">In Bond</mat-checkbox>
+          </div>
+        </mat-expansion-panel>
+      </div>
+    </div>
+
+    <!-- Load items -->
+    <mat-card class="section">
+      <div class="section-head">
+        <h3><mat-icon class="section-icon">inventory_2</mat-icon>Load Items</h3>
+        <button type="button" mat-raised-button color="primary" (click)="addLineItem()">
+          <mat-icon>add</mat-icon> Add New
+        </button>
+      </div>
+
+      <div class="table-scroll">
+        <table class="load-items">
+          <thead>
+            <tr>
+              <th>QTY</th>
+              <th>Units</th>
+              <th>Wgt (lbs)</th>
+              <th>NMFC#</th>
+              <th>Sub Class</th>
+              <th>Class</th>
+              <th>HM</th>
+              <th>Description</th>
+              <th>L</th>
+              <th>W</th>
+              <th>H</th>
+              <th>Stack</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody formArrayName="lineItems">
+            <tr *ngFor="let item of lineItems.controls; let i = index" [formGroupName]="i">
+              <td><input class="cell num" type="number" formControlName="qty"></td>
+              <td>
+                <select class="cell" formControlName="unitId">
+                  <option [ngValue]="null" disabled>Units</option>
+                  <option *ngFor="let u of units()" [ngValue]="u.id">{{ u.name }}</option>
+                </select>
+              </td>
+              <td><input class="cell num" type="number" formControlName="weight"></td>
+              <td><input class="cell" type="text" formControlName="nmfc"></td>
+              <td>
+                <select class="cell" formControlName="subClassId">
+                  <option [ngValue]="null">-</option>
+                  <option *ngFor="let s of subClasses()" [ngValue]="s.id">{{ s.name }}</option>
+                </select>
+              </td>
+              <td>
+                <select class="cell" formControlName="classId">
+                  <option [ngValue]="null" disabled>Class</option>
+                  <option *ngFor="let c of classes()" [ngValue]="c.id">{{ c.name }}</option>
+                </select>
+              </td>
+              <td class="center"><input type="checkbox" formControlName="isHazMat"></td>
+              <td><input class="cell wide" type="text" formControlName="description"></td>
+              <td><input class="cell num sm" type="number" formControlName="length"></td>
+              <td><input class="cell num sm" type="number" formControlName="width"></td>
+              <td><input class="cell num sm" type="number" formControlName="height"></td>
+              <td class="center"><input type="checkbox" formControlName="isStackable"></td>
+              <td class="center">
+                <button type="button" mat-icon-button color="warn" (click)="removeLineItem(i)"
+                        [disabled]="lineItems.length === 1">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="totals">
+        <strong>Total Weight: {{ totalWeight() }} Lbs.</strong>
+      </div>
+    </mat-card>
+
+    <!-- Shipping Units + Rate Quote Type: same row (stack on mobile) -->
+    <div class="address-row">
+      <div class="address-col">
+        <mat-expansion-panel #shipPanel class="section address-panel">
+          <mat-expansion-panel-header class="address-header" [collapsedHeight]="'auto'" [expandedHeight]="'48px'">
+            <mat-panel-title><mat-icon class="section-icon">local_shipping</mat-icon>Shipping Units</mat-panel-title>
+            <mat-panel-description class="address-summary" *ngIf="!shipPanel.expanded">
+              <span class="summary-item" *ngFor="let it of shippingSummaryItems()">
+                <span class="lbl">{{ it.label }}:</span> {{ it.value }}
+              </span>
+              <span class="summary-empty" *ngIf="!shippingSummaryItems().length">No data entered</span>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div class="row">
+            <div class="col-md-6">
+              <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Total Shipping Units</mat-label>
+                <input matInput type="number" formControlName="totalShippingUnits">
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Equipment Type</mat-label>
+                <mat-select formControlName="equipmentTypeId">
+                  <mat-option *ngFor="let e of equipmentTypes()" [value]="e.id">{{ e.name }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field appearance="fill" class="w-100">
+                <mat-label>Mileage</mat-label>
+                <input matInput type="number" formControlName="mileage">
+              </mat-form-field>
+            </div>
+          </div>
+        </mat-expansion-panel>
+      </div>
+
+      <div class="address-col">
+        <mat-expansion-panel #quotesPanel class="section address-panel" formGroupName="rateQuoteType"
+                             [expanded]="isExpanded('rateQuoteType')"
+                             (expandedChange)="setExpanded('rateQuoteType', $event)">
+          <mat-expansion-panel-header class="address-header" [collapsedHeight]="'auto'" [expandedHeight]="'48px'">
+            <mat-panel-title><mat-icon class="section-icon">request_quote</mat-icon>Rate Quote Type</mat-panel-title>
+            <mat-panel-description class="address-summary" *ngIf="!quotesPanel.expanded">
+              <span class="summary-item" *ngFor="let it of quotesSummaryItems()">{{ it }}</span>
+              <span class="summary-error" *ngIf="!quotesSummaryItems().length">None selected</span>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <div class="checkbox-row">
+            <mat-checkbox formControlName="includeLtlQuotes">Include LTL Quotes</mat-checkbox>
+            <mat-checkbox formControlName="includeVolumeQuotes">Include Volume Quotes</mat-checkbox>
+            <mat-checkbox formControlName="includeGuaranteedQuotes">Include Guaranteed Quotes</mat-checkbox>
+            <mat-checkbox formControlName="includeMabdQuotes">Include MABD Quotes</mat-checkbox>
+          </div>
+          <p class="group-error" *ngIf="rateQuoteTypeInvalid">
+            <mat-icon>error_outline</mat-icon> Select at least one quote type
+          </p>
+        </mat-expansion-panel>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" mat-raised-button color="primary" [disabled]="quotesService.isFetching()">
+        <mat-icon>request_quote</mat-icon> Rate Quote
+      </button>
+    </div>
+  </form>
+
+  <!-- Results -->
+  <mat-card class="section" *ngIf="quotesService.isFetching() || quotesService.quotes().length || quotesService.quoteErrors().length">
+    <div class="section-head">
+      <h3><mat-icon class="section-icon">local_offer</mat-icon>Carrier Quotes</h3>
+      <span *ngIf="quotesService.isFetching()" class="fetching">Fetching quotes...</span>
+    </div>
+
+    <div class="table-scroll">
+      <table mat-table [dataSource]="quotesService.quotes()" class="mat-elevation-z2 w-100">
+        <ng-container matColumnDef="carrier">
+          <th mat-header-cell *matHeaderCellDef>Carrier</th>
+          <td mat-cell *matCellDef="let q">{{ q.carrierName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="quote">
+          <th mat-header-cell *matHeaderCellDef>Quote #</th>
+          <td mat-cell *matCellDef="let q">{{ q.quoteNumber }}</td>
+        </ng-container>
+        <ng-container matColumnDef="service">
+          <th mat-header-cell *matHeaderCellDef>Service</th>
+          <td mat-cell *matCellDef="let q">{{ q.serviceLevel }}</td>
+        </ng-container>
+        <ng-container matColumnDef="baseRate">
+          <th mat-header-cell *matHeaderCellDef>Base Rate</th>
+          <td mat-cell *matCellDef="let q">{{ q.baseCharge | currency }}</td>
+        </ng-container>
+        <ng-container matColumnDef="accessCharge">
+          <th mat-header-cell *matHeaderCellDef>Access. Charge</th>
+          <td mat-cell *matCellDef="let q">{{ q.accessorialCharge | currency }}</td>
+        </ng-container>
+        <ng-container matColumnDef="totalCharge">
+          <th mat-header-cell *matHeaderCellDef>Total Charge</th>
+          <td mat-cell *matCellDef="let q">
+            <span class="total-amount">{{ q.totalCharge | currency }}</span>
+            <span class="best-badge" *ngIf="isBestRate(q)">Best</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="transit">
+          <th mat-header-cell *matHeaderCellDef>Transit</th>
+          <td mat-cell *matCellDef="let q">{{ q.transitDays }} d</td>
+        </ng-container>
+        <ng-container matColumnDef="notes">
+          <th mat-header-cell *matHeaderCellDef>Notes</th>
+          <td mat-cell *matCellDef="let q">{{ q.note }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="quoteColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: quoteColumns;" [class.best-rate]="isBestRate(row)"></tr>
+      </table>
+    </div>
+
+    <div class="quote-errors" *ngIf="quotesService.quoteErrors().length">
+      <p *ngFor="let e of quotesService.quoteErrors()" class="error">
+        <mat-icon>warning</mat-icon> {{ e.carrier }}: {{ e.error }}
+      </p>
+    </div>
+  </mat-card>
+
+</div>
+
+<!-- Reusable address section -->
+<ng-template #addressTpl let-group="group" let-services="services" let-title="title" let-insideLabel="insideLabel" let-key="key" let-icon="icon">
+  <mat-expansion-panel #panel class="address-panel section" [formGroup]="group"
+                       [expanded]="isExpanded(key)" (expandedChange)="setExpanded(key, $event)">
+    <mat-expansion-panel-header class="address-header" [collapsedHeight]="'auto'" [expandedHeight]="'48px'">
+      <mat-panel-title><mat-icon class="section-icon">{{ icon }}</mat-icon>{{ title }}</mat-panel-title>
+      <mat-panel-description class="address-summary" *ngIf="!panel.expanded">
+        <span class="summary-item" *ngFor="let it of addressSummaryItems(group, services)">
+          <span class="lbl">{{ it.label }}:</span> {{ it.value }}
+        </span>
+        <span class="summary-empty" *ngIf="!addressSummaryItems(group, services).length">No data entered</span>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <div class="field-groups">
+      <section class="field-group">
+        <h4 class="group-title">Address</h4>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name">
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Street Address</mat-label>
+          <input matInput formControlName="address1">
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Address 2</mat-label>
+          <input matInput formControlName="address2">
+        </mat-form-field>
+      </section>
+
+      <section class="field-group">
+        <h4 class="group-title">Location</h4>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Country</mat-label>
+          <mat-select formControlName="countryId" (selectionChange)="onCountryChange(group)">
+            <mat-option *ngFor="let c of quotesService.countries()" [value]="c.id">{{ c.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>State</mat-label>
+          <mat-select formControlName="stateId">
+            <mat-option *ngFor="let s of statesFor(group.get('countryId')?.value)" [value]="s.id">{{ s.name }}</mat-option>
+          </mat-select>
+          <mat-hint *ngIf="!group.get('countryId')?.value">Select a country first</mat-hint>
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>City</mat-label>
+          <input matInput formControlName="city">
+        </mat-form-field>
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Zip</mat-label>
+          <input matInput formControlName="zip">
+          <mat-error>Zip is required</mat-error>
+        </mat-form-field>
+      </section>
+    </div>
+
+    <section class="field-group other-group" *ngIf="services">
+      <h4 class="group-title">Other</h4>
+      <div class="other-grid">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Dock Type</mat-label>
+          <mat-select formControlName="dockTypeId">
+            <mat-option *ngFor="let d of dockTypes()" [value]="d.id">{{ d.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="other-checks">
+          <mat-checkbox formControlName="appointmentRequired">Appointment Required</mat-checkbox>
+          <mat-checkbox formControlName="liftGate">Lift Gate</mat-checkbox>
+          <mat-checkbox formControlName="inside">{{ insideLabel }}</mat-checkbox>
+        </div>
+      </div>
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Notes (Does not display on BOL)</mat-label>
+        <textarea matInput rows="2" formControlName="notes"></textarea>
+      </mat-form-field>
+    </section>
+  </mat-expansion-panel>
+</ng-template>

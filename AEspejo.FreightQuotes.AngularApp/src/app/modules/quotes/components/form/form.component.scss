@@ -1,0 +1,519 @@
+:host {
+  display: block;
+  background: #f4f6f8;
+  min-height: 100%;
+}
+
+.rate-quotes {
+  /* Brand accent palette (teal / logistics blue) */
+  --accent: #0e7490;
+  --accent-dark: #155e75;
+  --accent-soft: #ecfeff;
+  --accent-softer: #f4fdff;
+  --accent-border: #cffafe;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --best: #16a34a;
+  --best-soft: #dcfce7;
+  --invalid: #d32f2f;
+  --invalid-soft: #fef2f2;
+
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.5rem 0.25rem 2rem;
+
+  /* Title left, test-data shortcuts right, sharing the underline. */
+  .page-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 1.25rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--accent-border);
+  }
+
+  .page-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    color: var(--accent-dark);
+    font-weight: 700;
+  }
+
+  /* ---- Sections (cards & panels) ---- */
+  .section {
+    margin-bottom: 1rem;
+    border-radius: 10px;
+
+    h3 {
+      margin: 0 0 0.75rem;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--accent-dark);
+    }
+  }
+
+  mat-card.section {
+    padding: 1.25rem;
+    border-left: 3px solid var(--accent);
+    transition: box-shadow 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+  }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+
+    h3 {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 0;
+    }
+  }
+
+  .section-icon {
+    color: var(--accent);
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+
+  .w-100 {
+    width: 100%;
+  }
+
+  /* ---- Lightweight responsive grid (project has no Bootstrap CSS) ---- */
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -8px;
+  }
+
+  .row > [class*="col-"] {
+    padding: 0 8px;
+    box-sizing: border-box;
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+
+  @media (min-width: 768px) {
+    .row > .col-md-4 { flex: 0 0 33.333%; max-width: 33.333%; }
+    .row > .col-md-6 { flex: 0 0 50%; max-width: 50%; }
+    .row > .col-md-8 { flex: 0 0 66.667%; max-width: 66.667%; }
+    .row > .col-md-12 { flex: 0 0 100%; max-width: 100%; }
+  }
+
+  /* ---- Address panels: Billing on its own row; Origin + Destination side by side ---- */
+  .address-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .address-col {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+
+  .address-col-full {
+    flex: 1 1 100%;
+  }
+
+  .header-row {
+    align-items: flex-start;
+  }
+
+  /* Ship Date + Terms + Role share the left column, mirroring Billing's width. */
+  .shipping-terms-col {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+
+    mat-form-field {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+  }
+
+  /* Test-data shortcuts, sitting on the title line. */
+  .examples-col {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    .example-btn {
+      font-size: 0.78rem;
+      line-height: 1.9;
+
+      &.clear-btn {
+        color: var(--muted);
+      }
+
+      mat-icon {
+        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        margin-right: 2px;
+      }
+    }
+  }
+
+  /* Billing matches the width of Origin/Destination and is pushed to the right. */
+  .billing-col {
+    flex: 0 0 calc(50% - 0.5rem);
+    max-width: calc(50% - 0.5rem);
+    margin-left: auto;
+    min-width: 0;
+  }
+
+  @media (max-width: 768px) {
+    .billing-col {
+      flex: 1 1 100%;
+      max-width: 100%;
+      margin-left: 0;
+    }
+
+    .shipping-terms-col {
+      flex-wrap: wrap;
+    }
+
+    .address-col {
+      flex: 1 1 100%;
+    }
+  }
+
+  /* ---- Expansion panels ---- */
+  .address-panel {
+    border-left: 3px solid var(--accent);
+    border-radius: 10px;
+    transition: box-shadow 0.2s ease;
+
+    &:hover {
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    &.mat-expanded {
+      box-shadow: 0 6px 20px rgba(14, 116, 144, 0.16);
+    }
+  }
+
+  .address-panel.section {
+    padding: 0;
+    margin-bottom: 0;
+  }
+
+  .mat-expansion-panel-header-title {
+    align-items: center;
+    font-weight: 600;
+    color: var(--accent-dark);
+  }
+
+  .address-header {
+    align-items: flex-start;
+  }
+
+  /* ---- Collapsed summary as chips ---- */
+  .address-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 6px 0;
+
+    .summary-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      border: 1px solid var(--accent-border);
+      border-radius: 999px;
+      padding: 2px 10px;
+      font-size: 0.72rem;
+      line-height: 1.5;
+
+      .lbl {
+        font-weight: 600;
+      }
+    }
+
+    .summary-empty {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .summary-error {
+      font-size: 0.72rem;
+      color: var(--invalid);
+      font-style: italic;
+    }
+  }
+
+  .group-error {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0.5rem 0 0;
+    color: var(--invalid);
+    font-size: 0.78rem;
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  /* ---- Grouped address fields: Address | Location columns, Other below ---- */
+  .field-groups {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.25rem;
+  }
+
+  .field-group {
+    flex: 1 1 220px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .group-title {
+    margin: 0 0 0.5rem;
+    padding-bottom: 0.35rem;
+    border-bottom: 1px solid var(--accent-border);
+    color: var(--accent-dark);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .other-group {
+    margin-top: 0.5rem;
+  }
+
+  /* Dock Type beside its checkboxes; both drop to full width when narrow. */
+  .other-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.25rem;
+
+    > mat-form-field {
+      flex: 1 1 220px;
+      min-width: 0;
+    }
+  }
+
+  .other-checks {
+    flex: 1 1 220px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.25rem;
+    /* Align with the form field beside it, which reserves space for its hint. */
+    padding-bottom: 1.25rem;
+  }
+
+  .checkbox-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+
+  /* ---- Load items table ---- */
+  .table-scroll {
+    overflow-x: auto;
+    border-radius: 8px;
+  }
+
+  table.load-items {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 8px;
+      text-align: left;
+      font-size: 0.85rem;
+    }
+
+    thead th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      transition: background 0.15s ease;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    tbody tr:hover {
+      background: var(--accent-softer);
+    }
+
+    td {
+      border-bottom: 1px solid var(--border);
+    }
+
+    td.center {
+      text-align: center;
+    }
+
+    .cell {
+      width: 100%;
+      min-width: 70px;
+      padding: 5px 8px;
+      box-sizing: border-box;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+      &:focus {
+        border-color: var(--accent);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(14, 116, 144, 0.15);
+      }
+    }
+
+    /* Plain inputs/selects get no Material error state; flag them here.
+       Chrome ignores border-color and box-shadow on <select>, so use outline. */
+    .cell.ng-invalid.ng-touched,
+    .cell.ng-invalid.ng-touched:focus {
+      outline: 2px solid var(--invalid);
+      outline-offset: -1px;
+      background: var(--invalid-soft);
+      box-shadow: none;
+    }
+
+    .cell.num {
+      min-width: 60px;
+      text-align: right;
+    }
+
+    .cell.num.sm {
+      min-width: 48px;
+    }
+
+    .cell.wide {
+      min-width: 160px;
+    }
+  }
+
+  .totals {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+
+    strong {
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      border: 1px solid var(--accent-border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.95rem;
+    }
+  }
+
+  /* ---- Actions ---- */
+  .actions {
+    margin: 1.25rem 0;
+    display: flex;
+    justify-content: flex-end;
+
+    button {
+      min-width: 160px;
+    }
+  }
+
+  .fetching {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  /* ---- Results table ---- */
+  table[mat-table] {
+    width: 100%;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .mat-mdc-header-row {
+    background: var(--accent);
+  }
+
+  .mat-mdc-header-cell {
+    background: var(--accent);
+    color: #fff;
+    font-weight: 600;
+    border-bottom: none;
+  }
+
+  .mat-mdc-row {
+    transition: background 0.15s ease;
+
+    &:nth-child(even) {
+      background: #f8fafc;
+    }
+
+    &:hover {
+      background: var(--accent-softer);
+    }
+
+    &.best-rate {
+      background: var(--best-soft) !important;
+    }
+  }
+
+  .total-amount {
+    font-weight: 700;
+  }
+
+  .best-badge {
+    margin-left: 6px;
+    background: var(--best);
+    color: #fff;
+    border-radius: 999px;
+    padding: 1px 8px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    vertical-align: middle;
+  }
+
+  .quote-errors {
+    margin-top: 0.75rem;
+
+    .error {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      color: #b71c1c;
+      margin: 0.25rem 0;
+    }
+  }
+}

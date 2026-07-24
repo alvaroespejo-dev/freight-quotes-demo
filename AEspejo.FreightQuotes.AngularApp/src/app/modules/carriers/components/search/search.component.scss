@@ -1,0 +1,19 @@
+/* Compact table density (kept in sync with the /settings reference tables). */
+table.mat-mdc-table {
+  --mat-table-header-container-height: 40px;
+  --mat-table-row-item-container-height: 40px;
+
+  .mat-mdc-cell,
+  .mat-mdc-header-cell {
+    padding-top: 0;
+    padding-bottom: 0;
+    font-size: 0.85rem;
+  }
+
+  button.mat-mdc-icon-button {
+    --mdc-icon-button-state-layer-size: 36px;
+    width: 36px;
+    height: 36px;
+    padding: 6px;
+  }
+}

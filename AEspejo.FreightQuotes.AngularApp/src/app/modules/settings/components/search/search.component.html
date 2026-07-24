@@ -1,0 +1,136 @@
+<div class="settings-page">
+
+  <mat-toolbar class="settings-toolbar">
+    <mat-icon>tune</mat-icon>
+    <span class="title">Reference Data</span>
+    <span class="spacer"></span>
+    <mat-form-field appearance="outline" class="filter-field" subscriptSizing="dynamic">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput placeholder="Filter by code or name…" [ngModel]="filter()" (ngModelChange)="filter.set($event)">
+    </mat-form-field>
+  </mat-toolbar>
+
+  <p class="hint">Only the <strong>Name</strong> can be edited. Change it and press the save icon.</p>
+
+  @if (isLoading()) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+  }
+
+  @if (error(); as err) {
+    <div class="error">{{ err }}</div>
+  }
+
+  <mat-tab-group class="settings-tabs" animationDuration="0ms" mat-stretch-tabs="false">
+
+    @for (tab of constantTabs; track tab.typeId) {
+      <mat-tab [label]="tab.label">
+        <ng-container *ngTemplateOutlet="codeNameTable; context: { rows: constantsFor(tab.typeId), kind: 'constants' }"></ng-container>
+      </mat-tab>
+    }
+
+    <mat-tab label="Accessorials">
+      <table mat-table [dataSource]="accessorials()" class="ref-table">
+        <ng-container matColumnDef="code">
+          <th mat-header-cell *matHeaderCellDef> Code </th>
+          <td mat-cell *matCellDef="let row"> {{ row.code }} </td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let row">
+            <ng-container *ngTemplateOutlet="nameEditor; context: { row, kind: 'accessorials' }"></ng-container>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef> Category </th>
+          <td mat-cell *matCellDef="let row"> {{ row.categoryName }} </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *matCellDef="let row">
+            <ng-container *ngTemplateOutlet="saveButton; context: { row, kind: 'accessorials' }"></ng-container>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="accessorialColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: accessorialColumns;"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="accessorialColumns.length"> No results. </td>
+        </tr>
+      </table>
+    </mat-tab>
+
+    <mat-tab label="Countries">
+      <ng-container *ngTemplateOutlet="codeNameTable; context: { rows: countries(), kind: 'countries' }"></ng-container>
+    </mat-tab>
+
+    <mat-tab label="States">
+      <table mat-table [dataSource]="states()" class="ref-table">
+        <ng-container matColumnDef="code">
+          <th mat-header-cell *matHeaderCellDef> Code </th>
+          <td mat-cell *matCellDef="let row"> {{ row.code }} </td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let row">
+            <ng-container *ngTemplateOutlet="nameEditor; context: { row, kind: 'states' }"></ng-container>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="country">
+          <th mat-header-cell *matHeaderCellDef> Country </th>
+          <td mat-cell *matCellDef="let row"> {{ row.countryName }} </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> </th>
+          <td mat-cell *matCellDef="let row">
+            <ng-container *ngTemplateOutlet="saveButton; context: { row, kind: 'states' }"></ng-container>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="stateColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: stateColumns;"></tr>
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="stateColumns.length"> No results. </td>
+        </tr>
+      </table>
+    </mat-tab>
+
+  </mat-tab-group>
+</div>
+
+<ng-template #codeNameTable let-rows="rows" let-kind="kind">
+  <table mat-table [dataSource]="rows" class="ref-table">
+    <ng-container matColumnDef="code">
+      <th mat-header-cell *matHeaderCellDef> Code </th>
+      <td mat-cell *matCellDef="let row"> {{ row.code }} </td>
+    </ng-container>
+    <ng-container matColumnDef="name">
+      <th mat-header-cell *matHeaderCellDef> Name </th>
+      <td mat-cell *matCellDef="let row">
+        <ng-container *ngTemplateOutlet="nameEditor; context: { row, kind }"></ng-container>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef> </th>
+      <td mat-cell *matCellDef="let row">
+        <ng-container *ngTemplateOutlet="saveButton; context: { row, kind }"></ng-container>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="codeNameColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: codeNameColumns;"></tr>
+    <tr class="mat-row" *matNoDataRow>
+      <td class="mat-cell no-data" [attr.colspan]="codeNameColumns.length"> No results. </td>
+    </tr>
+  </table>
+</ng-template>
+
+<ng-template #nameEditor let-row="row" let-kind="kind">
+  <mat-form-field appearance="outline" class="name-field" subscriptSizing="dynamic">
+    <input matInput [(ngModel)]="row.name" [name]="kind + '-name-' + row.id"
+           (keyup.enter)="save(kind, row)" [disabled]="isSaving(kind, row)">
+  </mat-form-field>
+</ng-template>
+
+<ng-template #saveButton let-row="row" let-kind="kind">
+  <button mat-icon-button color="primary" aria-label="Save name"
+          [disabled]="isSaving(kind, row)" (click)="save(kind, row)">
+    <mat-icon>save</mat-icon>
+  </button>
+</ng-template>
