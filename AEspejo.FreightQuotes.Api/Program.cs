@@ -85,6 +85,29 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+app.MapGet("/", () => Results.Ok(new
+{
+    service = "Freight Quotes API",
+    status = "Running",
+    health = "/health"
+}));
+
+app.MapGet("/health", async (FreightQuotesDbContext db) =>
+{
+    try
+    {
+        return Results.Ok(new
+        {
+            status = "Healthy",
+            database = db.Database.CanConnect()
+        });
+    }
+    catch
+    {
+        return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+    }
+});
+
 app.MapControllers();
 
 app.MapHub<RateQuoteHub>("/hubs/rate-quote");
