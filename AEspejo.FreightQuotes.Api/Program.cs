@@ -51,14 +51,15 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<FreightQuotesDbContext>();
+    db.Database.Migrate();
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    using (var scope = app.Services.CreateScope())
-    {
-        var db = scope.ServiceProvider.GetRequiredService<FreightQuotesDbContext>();
-        db.Database.Migrate();
-    }
     //builder.Services.AddHttpsRedirection(options =>
     //{
     //    options.HttpsPort = 7129;
