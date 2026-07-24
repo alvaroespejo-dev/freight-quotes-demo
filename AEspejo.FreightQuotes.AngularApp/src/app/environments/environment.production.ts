@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://tu-api-produccion.com/api'
+  apiUrl: 'https://freightquotesapi-dxc8d0agaqepd0c4.canadacentral-01.azurewebsites.net/api'
 };
