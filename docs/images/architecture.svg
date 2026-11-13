@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720" font-family="'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <style>
+      .title { font-size: 22px; font-weight: 700; fill: #0f3d52; }
+      .subtitle { font-size: 13px; fill: #5b7785; }
+      .band-label { font-size: 12px; font-weight: 700; letter-spacing: .5px; fill: #ffffff; }
+      .box-title { font-size: 14px; font-weight: 700; fill: #0f3d52; }
+      .box-sub { font-size: 11px; fill: #51707e; }
+      .edge { stroke: #9bb4bf; stroke-width: 1.6; fill: none; }
+      .edge-dash { stroke: #2a94c0; stroke-width: 1.8; fill: none; stroke-dasharray: 5 4; }
+      .tag { font-size: 10px; fill: #2a94c0; font-weight: 700; }
+    </style>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#9bb4bf"/>
+    </marker>
+    <marker id="arrow-dash" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#2a94c0"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="720" fill="#f4f8fa"/>
+  <text x="40" y="46" class="title">AEspejo.FreightQuotes &#8212; Solution Architecture</text>
+  <text x="40" y="68" class="subtitle">Layered .NET backend with Angular client, keyed carrier adapters and real-time SignalR quote streaming</text>
+
+  <!-- CLIENT BAND -->
+  <rect x="40" y="90" width="880" height="110" rx="10" fill="#e3f0f5" stroke="#cfe2ea"/>
+  <rect x="40" y="90" width="150" height="110" rx="10" fill="#1d7fa3"/>
+  <text x="115" y="150" class="band-label" text-anchor="middle">CLIENT</text>
+  <rect x="210" y="112" width="300" height="66" rx="8" fill="#ffffff" stroke="#cfe2ea"/>
+  <text x="228" y="138" class="box-title">Angular 19 SPA</text>
+  <text x="228" y="158" class="box-sub">Material UI &#183; Signals &#183; RxJS &#183; quote form, results, admin</text>
+  <rect x="540" y="112" width="360" height="66" rx="8" fill="#ffffff" stroke="#cfe2ea"/>
+  <text x="558" y="138" class="box-title">@microsoft/signalr client</text>
+  <text x="558" y="158" class="box-sub">Joins requestId group &#183; ReceiveQuotes / Error / Completed</text>
+
+  <!-- API BAND -->
+  <rect x="40" y="224" width="880" height="118" rx="10" fill="#e8f1ec" stroke="#d4e6dc"/>
+  <rect x="40" y="224" width="150" height="118" rx="10" fill="#2e7d5b"/>
+  <text x="115" y="289" class="band-label" text-anchor="middle">API</text>
+  <rect x="210" y="246" width="215" height="74" rx="8" fill="#ffffff" stroke="#d4e6dc"/>
+  <text x="228" y="272" class="box-title">Controllers + MediatR</text>
+  <text x="228" y="291" class="box-sub">Feature folders:</text>
+  <text x="228" y="307" class="box-sub">commands, queries, handlers</text>
+  <rect x="445" y="246" width="215" height="74" rx="8" fill="#ffffff" stroke="#d4e6dc"/>
+  <text x="463" y="272" class="box-title">RateQuote Hub</text>
+  <text x="463" y="291" class="box-sub">ASP.NET Core SignalR</text>
+  <text x="463" y="307" class="box-sub">per-requestId groups</text>
+  <rect x="680" y="246" width="220" height="74" rx="8" fill="#ffffff" stroke="#d4e6dc"/>
+  <text x="698" y="272" class="box-title">DI &amp; Health</text>
+  <text x="698" y="291" class="box-sub">Scrutor registration</text>
+  <text x="698" y="307" class="box-sub">/health &#183; Swagger</text>
+
+  <!-- APPLICATION BAND -->
+  <rect x="40" y="366" width="880" height="96" rx="10" fill="#f0ecf5" stroke="#e1d8ea"/>
+  <rect x="40" y="366" width="150" height="96" rx="10" fill="#6b4e9e"/>
+  <text x="115" y="420" class="band-label" text-anchor="middle">APPLICATION</text>
+  <rect x="210" y="388" width="330" height="52" rx="8" fill="#ffffff" stroke="#e1d8ea"/>
+  <text x="228" y="411" class="box-title">Rate-quote &amp; carrier services</text>
+  <text x="228" y="429" class="box-sub">Orchestration &#183; ID &#8594; carrier-code resolution &#183; AutoMapper</text>
+  <rect x="560" y="388" width="340" height="52" rx="8" fill="#ffffff" stroke="#e1d8ea"/>
+  <text x="578" y="411" class="box-title">Repository / Unit-of-Work contracts</text>
+  <text x="578" y="429" class="box-sub">Shared DTOs &#183; persistence abstractions</text>
+
+  <!-- CARRIER + INFRA BAND -->
+  <rect x="40" y="486" width="430" height="150" rx="10" fill="#fbefe4" stroke="#f0ddc8"/>
+  <rect x="40" y="486" width="150" height="150" rx="10" fill="#c06f2a"/>
+  <text x="115" y="555" class="band-label" text-anchor="middle">CARRIER</text>
+  <text x="115" y="573" class="band-label" text-anchor="middle">CLIENTS</text>
+  <rect x="206" y="506" width="246" height="40" rx="7" fill="#ffffff" stroke="#f0ddc8"/>
+  <text x="222" y="531" class="box-sub"><tspan class="box-title">Keyed DI by SCAC</tspan> &#183; ICarrierRateClient</text>
+  <rect x="206" y="552" width="76" height="34" rx="6" fill="#ffffff" stroke="#f0ddc8"/>
+  <text x="244" y="574" class="box-sub" text-anchor="middle">FedEx</text>
+  <rect x="291" y="552" width="76" height="34" rx="6" fill="#ffffff" stroke="#f0ddc8"/>
+  <text x="329" y="574" class="box-sub" text-anchor="middle">UPS</text>
+  <rect x="376" y="552" width="76" height="34" rx="6" fill="#ffffff" stroke="#f0ddc8"/>
+  <text x="414" y="574" class="box-sub" text-anchor="middle">Mock</text>
+  <rect x="206" y="592" width="246" height="32" rx="6" fill="#fff6ee" stroke="#f0ddc8"/>
+  <text x="222" y="612" class="box-sub">Exception-handling decorator &#183; HttpClient &#183; OAuth</text>
+
+  <!-- INFRA BAND -->
+  <rect x="490" y="486" width="430" height="150" rx="10" fill="#e6eef5" stroke="#d2e0ec"/>
+  <rect x="770" y="486" width="150" height="150" rx="10" fill="#2a5f8f"/>
+  <text x="845" y="555" class="band-label" text-anchor="middle">INFRA &amp;</text>
+  <text x="845" y="573" class="band-label" text-anchor="middle">DATA</text>
+  <rect x="506" y="506" width="246" height="40" rx="7" fill="#ffffff" stroke="#d2e0ec"/>
+  <text x="522" y="531" class="box-sub"><tspan class="box-title">EF Core 9</tspan> &#183; FreightQuotesDbContext</text>
+  <rect x="506" y="552" width="246" height="34" rx="6" fill="#ffffff" stroke="#d2e0ec"/>
+  <text x="522" y="574" class="box-sub">Repositories &#183; Unit of Work &#183; seed data</text>
+  <rect x="506" y="592" width="118" height="32" rx="6" fill="#eef4f9" stroke="#d2e0ec"/>
+  <text x="565" y="612" class="box-sub" text-anchor="middle">SQLite</text>
+  <rect x="634" y="592" width="118" height="32" rx="6" fill="#eef4f9" stroke="#d2e0ec"/>
+  <text x="693" y="612" class="box-sub" text-anchor="middle">SQL Server</text>
+
+  <!-- vertical connectors -->
+  <path class="edge" d="M360 178 L360 246" marker-end="url(#arrow)"/>
+  <path class="edge-dash" d="M620 178 L620 246" marker-end="url(#arrow-dash)"/>
+  <text x="628" y="214" class="tag">WebSocket</text>
+  <path class="edge" d="M360 320 L360 388" marker-end="url(#arrow)"/>
+  <path class="edge" d="M552 320 L720 388" marker-end="url(#arrow)"/>
+  <path class="edge" d="M330 440 L330 506" marker-end="url(#arrow)"/>
+  <text x="338" y="476" class="tag">parallel carrier calls</text>
+  <path class="edge" d="M640 440 L640 506" marker-end="url(#arrow)"/>
+  <!-- quotes stream back to hub -->
+  <path class="edge-dash" d="M452 566 L520 566 L520 300 L545 300" marker-end="url(#arrow-dash)"/>
+  <text x="460" y="492" class="tag">quotes &#8594; hub group</text>
+
+  <text x="40" y="690" class="subtitle">Migrations live in provider-specific assemblies (Sqlite / SqlServer). Hosted on Azure App Service (API) and Azure Static Web Apps (client).</text>
+</svg>

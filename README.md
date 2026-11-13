@@ -20,6 +20,24 @@ The frontend opens a SignalR connection before submitting the request. It joins 
 
 The application is seeded with FedEx, Estes and UPS carriers in mock mode, so local development does not require carrier credentials. Real carrier endpoints and credentials are stored as carrier settings and can be configured through the application.
 
+## Screenshots
+
+The live demo is available at `https://quotes.alvaroespejo.com`.
+
+| Control Panel | Rate Quote form |
+| --- | --- |
+| [![Control Panel](docs/images/01-control-panel.jpg)](docs/images/01-control-panel.jpg) | [![Rate Quote form](docs/images/02-quote-form.jpg)](docs/images/02-quote-form.jpg) |
+| Landing dashboard with Quotes, Carriers and Configuration. | Shipment form with origin, destination, billing, accessorials and load items. |
+
+| Multi-carrier results | Carrier management |
+| --- | --- |
+| [![Carrier quotes](docs/images/03-quote-results.jpg)](docs/images/03-quote-results.jpg) | [![Carriers](docs/images/04-carriers.jpg)](docs/images/04-carriers.jpg) |
+| Quotes streamed from each carrier in real time, with the cheapest option marked **Best**. | Carrier list showing active state and mock mode per SCAC. |
+
+| Carrier settings | |
+| --- | --- |
+| [![Carrier settings](docs/images/05-carrier-settings.jpg)](docs/images/05-carrier-settings.jpg) | Per-carrier rating and authentication settings (URL, account, client ID and secret). |
+
 ## Features
 
 - Multi-carrier LTL quote requests from a single shipment form.
@@ -40,6 +58,8 @@ The application is seeded with FedEx, Estes and UPS carriers in mock mode, so lo
 
 ## Quote Flow
 
+![Real-time quote flow](docs/images/quote-flow.svg)
+
 1. The Angular client loads countries, states, constants, accessorials and carriers.
 2. The user enters shipment addresses and one or more freight line items.
 3. The client connects to `/hubs/rate-quote` and joins the request group.
@@ -50,6 +70,8 @@ The application is seeded with FedEx, Estes and UPS carriers in mock mode, so lo
 8. The client displays quotes as they arrive and stops loading after `AllQuotesCompleted`.
 
 ## Architecture
+
+![Solution architecture](docs/images/architecture.svg)
 
 The solution uses a layered architecture with feature-oriented API handlers and a provider-independent persistence layer.
 
